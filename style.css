@@ -2,17 +2,22 @@ body {
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    /* Oyunu yatayda (sağ-sol) tam ortalar */
+    justify-content: center; 
+    /* Oyunu dikeyde (üst-alt) tam ortalar */
+    align-items: center; 
     height: 100vh;
     background-color: #1a1a1a;
     overflow: hidden;
 }
 
 .game-container {
+    /* Canvas etrafındaki beyaz çerçeve */
     border: 5px solid #fff;
     box-shadow: 0 0 20px rgba(0,0,0,0.8);
     background-color: #000;
+    /* Mobilde taşmayı önlemek için */
+    display: flex; 
 }
 
 #gameCanvas {
