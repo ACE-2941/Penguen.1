@@ -178,7 +178,7 @@ function draw() {
         ctx.fillText("Penguen Finito", canvas.width / 2, canvas.height / 2);
         ctx.fillStyle = "white";
         ctx.font = "20px Arial";
-        ctx.fillText("Yeniden başlamak için tıkla", canvas.width / 2, canvas.height / 2 + 50);
+        ctx.fillText("HATA BAS VERDI EKRANA BASIVER", canvas.width / 2, canvas.height / 2 + 50);
         ctx.textAlign = "left";
     }
 }
