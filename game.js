@@ -49,6 +49,29 @@ window.onkeydown = (e) => {
     if (!gameActive && gameOverTimer > 30) resetGame();
 };
 window.onkeyup = () => moveDir = 0;
+// MOBİL KONTROLLER (Dokunmatik)
+canvas.addEventListener("touchstart", (e) => {
+    e.preventDefault(); // Sayfanın kaymasını engeller
+    const touchX = e.touches[0].clientX;
+    const screenWidth = window.innerWidth;
+
+    if (!gameActive && gameOverTimer > 30) {
+        resetGame();
+    } else {
+        // Ekranın sol yarısı sol, sağ yarısı sağ
+        if (touchX < screenWidth / 2) {
+            moveDir = -1;
+        } else {
+            moveDir = 1;
+        }
+        // Her dokunuşta zıplama tetiklensin (Opsiyonel: Sadece yukarı çekme de yapılabilir)
+        jump();
+    }
+}, { passive: false });
+
+canvas.addEventListener("touchend", (e) => {
+    moveDir = 0; // Dokunmayı bırakınca dur
+}, { passive: false });
 
 function jump() {
     if (!penguin.isJumping && gameActive) {
