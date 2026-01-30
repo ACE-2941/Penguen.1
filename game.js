@@ -8,7 +8,7 @@ let puan = 0;
 let gameActive = true;
 let gameOverTimer = 0;
 
-// AYARLAR: Eğer penguen hala kenara değmiyorsa bu sayıyı artır (Örn: 70)
+// AYARLAR
 const kenarPayi = 60; 
 
 // ASSETLER
@@ -26,8 +26,8 @@ const penguin = {
     y: 500,
     w: 100, 
     h: 100,
-    hitW: 40, // Çarpışma genişliği
-    hitH: 60, // Çarpışma yüksekliği
+    hitW: 40, 
+    hitH: 60, 
     frameX: 0,
     frameY: 0,
     maxFrames: 5,
@@ -49,29 +49,27 @@ window.onkeydown = (e) => {
     if (!gameActive && gameOverTimer > 30) resetGame();
 };
 window.onkeyup = () => moveDir = 0;
-// MOBİL KONTROLLER (Dokunmatik)
+
+// --- MOBİL EKLEME BAŞLANGICI ---
 canvas.addEventListener("touchstart", (e) => {
-    e.preventDefault(); // Sayfanın kaymasını engeller
+    e.preventDefault();
     const touchX = e.touches[0].clientX;
-    const screenWidth = window.innerWidth;
+    const rect = canvas.getBoundingClientRect();
+    const canvasTouchX = (touchX - rect.left) * (canvas.width / rect.width);
 
     if (!gameActive && gameOverTimer > 30) {
         resetGame();
-    } else {
-        // Ekranın sol yarısı sol, sağ yarısı sağ
-        if (touchX < screenWidth / 2) {
-            moveDir = -1;
-        } else {
-            moveDir = 1;
-        }
-        // Her dokunuşta zıplama tetiklensin (Opsiyonel: Sadece yukarı çekme de yapılabilir)
+    } else if (gameActive) {
+        if (canvasTouchX < canvas.width / 2) moveDir = -1;
+        else moveDir = 1;
         jump();
     }
 }, { passive: false });
 
 canvas.addEventListener("touchend", (e) => {
-    moveDir = 0; // Dokunmayı bırakınca dur
+    moveDir = 0;
 }, { passive: false });
+// --- MOBİL EKLEME BİTİŞİ ---
 
 function jump() {
     if (!penguin.isJumping && gameActive) {
@@ -99,12 +97,10 @@ function update() {
         return;
     }
 
-    // Hareket
     penguin.x += moveDir * 9;
     penguin.y += penguin.velocityY;
     penguin.velocityY += penguin.gravity;
 
-    // Yer Kontrolü
     if (penguin.y > 500) {
         penguin.y = 500;
         penguin.isJumping = false;
@@ -113,13 +109,11 @@ function update() {
         penguin.maxFrames = 5;
     }
 
-    // KENAR KONTROLÜ: Penguenin tam yapışmasını sağlar
     if (penguin.x < -kenarPayi) penguin.x = -kenarPayi;
     if (penguin.x > canvas.width - penguin.w + kenarPayi) {
         penguin.x = canvas.width - penguin.w + kenarPayi;
     }
 
-    // Zorluk ve Üretim
     let oyunHizi = (puan < 100) ? 3 : 3 + (puan - 100) * 0.05;
     let uretimSikligi = (puan < 100) ? 80 : 55;
 
@@ -135,7 +129,6 @@ function update() {
         timer = 0;
     }
 
-    // Engeller ve Çarpışma
     obstacles.forEach((o, i) => {
         o.y += oyunHizi;
         if (o.y > canvas.height) {
@@ -154,7 +147,6 @@ function update() {
         }
     });
 
-    // Animasyon
     penguin.fps++;
     if (penguin.fps % penguin.stagger === 0) {
         penguin.frameX = (penguin.frameX + 1) % penguin.maxFrames;
@@ -164,15 +156,12 @@ function update() {
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Arka Plan
     if (bgImg.complete) ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
 
-    // Penguen
     if (penguinImg.complete) {
         ctx.drawImage(penguinImg, penguin.frameX * 64, penguin.frameY * 40, 64, 40, penguin.x, penguin.y, penguin.w, penguin.h);
     }
 
-    // Buzlar ve Siyah Kontur
     obstacles.forEach(o => {
         if (buzImg.complete) {
             ctx.save();
@@ -183,14 +172,12 @@ function draw() {
         }
     });
 
-    // Puan
     ctx.fillStyle = "white";
     ctx.font = "bold 26px Arial";
     ctx.shadowBlur = 4;
     ctx.shadowColor = "black";
     ctx.fillText("PUAN: " + puan, 20, 45);
 
-    // Bitiş Ekranı
     if (!gameActive) {
         ctx.shadowBlur = 0;
         ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
